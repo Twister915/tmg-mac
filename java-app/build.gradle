@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.edu.sc.seis:macAppBundle:2.1.6"
+    }
+}
+
+group 'pw.tmg.client'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: "edu.sc.seis.macAppBundle"
+
+sourceCompatibility = 1.8
+
+macAppBundle {
+    mainClassName = "pw.tmg.client.TmgClient"
+
+    bundleExtras = ["LSUIElement": 1, "LSBackgroundOnly" : 1]
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile 'net.java.dev.jna:jna:4.2.0'
+    compile 'com.github.tulskiy:jkeymaster:1.2'
+    compile 'io.reactivex:rxjava:+'
+    compile 'org.projectlombok:lombok:+'
+    compile 'com.google.inject:guice:+'
+    compile 'com.squareup.okhttp3:okhttp:+'
+}
+
+tasks.getByName('createApp').dependsOn ':mac-utils:buildLib'
+tasks.getByName('createApp').mustRunAfter ':mac-utils:buildLib'

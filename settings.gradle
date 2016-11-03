@@ -1,0 +1,4 @@
+rootProject.name = 'tmg-mac'
+include 'mac-utils'
+include 'java-app'
+

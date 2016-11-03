@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.openbakery:xcode-plugin:0.14.3"
+    }
+}
+
+apply plugin: "org.openbakery.xcode-plugin"
+
+xcodebuild {
+    scheme = 'mac-utils'
+    target = 'mac-utils'
+    configuration = 'Release'
+    type = 'OSX'
+}
+
+task copyGeneratedToRootProject(type: Copy) {
+    from "${buildDir}/sym/Release/libmac-utils.dylib"
+    into "../java-app/src/main/resources/darwin/"
+}
+
+task buildLib() {
+    dependsOn 'clean'
+    dependsOn 'build'
+    dependsOn 'copyGeneratedToRootProject'
+
+    tasks.findByName('copyGeneratedToRootProject').mustRunAfter 'build'
+    tasks.findByName('build').mustRunAfter 'clean'
+}
