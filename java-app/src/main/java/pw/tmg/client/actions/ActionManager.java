@@ -29,9 +29,9 @@ public final class ActionManager {
         actions.forEach(new TypeMap.ForEachAction<TmgAction>() {
             @SuppressWarnings("MagicConstant")
             @Override
-            public <T extends TmgAction> void perform(Class<T> clazz, T obj) {
-                ActionMeta actionMeta = actions.getAnnotation(clazz, ActionMeta.class).orElseThrow(() -> new IllegalStateException("All actions must have a defined meta type!"));
-                keystroke.bindKey(KeyStroke.getKeyStroke(actionMeta.defaultHotkeyCode(), actionMeta.defaultHotkeyModifier()), () -> go(obj)).subscribe(v -> {}, e -> {
+            public <T extends TmgAction> void perform(Class<T> actionType, T action) {
+                ActionMeta actionMeta = actions.getAnnotation(actionType, ActionMeta.class).orElseThrow(() -> new IllegalStateException("All actions must have a defined meta type!"));
+                keystroke.bindKey(KeyStroke.getKeyStroke(actionMeta.defaultHotkeyCode(), actionMeta.defaultHotkeyModifier()), () -> performAction(action)).subscribe(v -> {}, e -> {
                     System.out.println("Error registering keybind...");
                     e.printStackTrace();
                 });
@@ -40,7 +40,7 @@ public final class ActionManager {
         });
     }
 
-    public void go(TmgAction action) {
+    public void performAction(TmgAction action) {
         System.out.println("called");
         action.call().toObservable().filter(e -> e != null).lift(uploader.get()).subscribe(result -> {
             clipboardHandler.setClipboard(result.getUrl());
@@ -54,6 +54,7 @@ public final class ActionManager {
             audioEngine.tryPlaySound(Constants.UPLOAD_SOUND).subscribe();
         }, ex -> {
             ex.printStackTrace();
+            notificationHandler.postNotification(new Notification("Upload failed", ex.getMessage(), null, null)).subscribe();
             audioEngine.tryPlaySound(Constants.FAIL_SOUND).subscribe();
         });
     }

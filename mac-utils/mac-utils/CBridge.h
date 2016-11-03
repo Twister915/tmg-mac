@@ -16,7 +16,7 @@ typedef void(*notification_callback)(void);
 const int sendNotification(const char *title, const char *subtitle, const char *message, const char *sound, notification_callback callback);
 PasteboardContent **getPasteboardContents();
 const int writeToPasteboard(const char *data);
-    
+
 #ifdef __cplusplus
 }
 #endif

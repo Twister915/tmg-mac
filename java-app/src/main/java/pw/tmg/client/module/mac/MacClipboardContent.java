@@ -1,6 +1,7 @@
 package pw.tmg.client.module.mac;
 
 import com.sun.jna.Pointer;
+import okio.ByteString;
 import pw.tmg.client.model.ClipboardContent;
 import pw.tmg.client.model.UploadTarget;
 import rx.Single;
@@ -27,10 +28,10 @@ final class MacClipboardContent implements ClipboardContent {
         PasteboardContent pasteboardContent = content.get(0);
         return Single.just(new UploadTarget() {
             @Override
-            public byte[] readData() throws IOException {
+            public ByteString readData() throws IOException {
                 byte[] bytes = new byte[(int) pasteboardContent.length];
                 pasteboardContent.data.read(0, bytes, 0, bytes.length);
-                return bytes;
+                return ByteString.of(bytes);
             }
 
             @Override

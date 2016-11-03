@@ -1,20 +1,19 @@
 package pw.tmg.client.module.mac;
 
-import com.google.inject.Singleton;
 import com.tulskiy.keymaster.common.Provider;
 import pw.tmg.client.model.*;
 import rx.Single;
 import rx.functions.Action0;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 @Singleton
 final class MacPlatform implements ClipboardHandler, KeybindHandler, NotificationHandler, ScreenShotter {
-    @Inject private MacBridge bridge;
+    @Inject MacBridge bridge;
     private Provider keybindProvider = Provider.getCurrentProvider(false);
 
     @Override

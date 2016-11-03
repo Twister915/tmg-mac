@@ -8,8 +8,8 @@ import pw.tmg.client.TmgTrayIcon;
 import pw.tmg.client.actions.ActionManager;
 import pw.tmg.client.model.*;
 import pw.tmg.client.module.cross.audio.JavaAudio;
+import pw.tmg.client.module.cross.okhttp.TmgUploaderOkHttp;
 import pw.tmg.client.module.mac.MacPlatformModule;
-import pw.tmg.client.module.cross.okhttp.TmgUploadedOkHttp;
 
 public final class MainModule extends AbstractModule {
     @Override
@@ -33,7 +33,7 @@ public final class MainModule extends AbstractModule {
                 addError("Cannot create platform module, invalid platform!");
         }
 
-        bind(Uploader.class).to(TmgUploadedOkHttp.class);
+        bind(Uploader.class).to(TmgUploaderOkHttp.class);
         bind(String.class).annotatedWith(Names.named("api-key")).toInstance("hi123");
     }
 }

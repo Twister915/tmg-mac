@@ -1,9 +1,10 @@
 package pw.tmg.client.actions;
 
-import com.google.inject.Inject;
 import pw.tmg.client.model.*;
 import rx.Single;
 import rx.schedulers.Schedulers;
+
+import javax.inject.Inject;
 
 public abstract class TmgScreenCapture implements TmgAction {
     @Inject private ScreenShotter screenShotter;

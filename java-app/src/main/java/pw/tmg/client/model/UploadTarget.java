@@ -1,9 +1,11 @@
 package pw.tmg.client.model;
 
+import okio.ByteString;
+
 import java.io.IOException;
 
 public interface UploadTarget {
-    byte[] readData() throws IOException;
+    ByteString readData() throws IOException;
     String getMimeType();
     String getOriginalName();
 }

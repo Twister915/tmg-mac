@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Singleton
-public final class TmgUploadedOkHttp implements Uploader {
+public final class TmgUploaderOkHttp implements Uploader {
     @Inject @Named("api-key") private String apiKey;
     private final OkHttpClient client = new OkHttpClient.Builder().followRedirects(false).build();
 
@@ -57,6 +57,10 @@ public final class TmgUploadedOkHttp implements Uploader {
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
+                            if (response.code() != 302) {
+                                onFailure(call, new IOException("Failed to upload, status " + response.code()));
+                                return;
+                            }
                             subscriber.onNext(new UploadResult("https://tmg.pw" + response.header("Location")));
                             if (!finished.getAndSet(true))
                                 callCompleted();
