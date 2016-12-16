@@ -1,6 +1,5 @@
 package pw.tmg.client.module.mac;
 
-import com.google.common.net.MediaType;
 import okio.ByteString;
 import org.apache.tika.Tika;
 import org.bridj.Pointer;
@@ -8,7 +7,6 @@ import pw.tmg.client.model.ClipboardContent;
 import pw.tmg.client.model.UploadTarget;
 import rx.Single;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Provider;
 import java.io.File;
 import java.io.IOException;
