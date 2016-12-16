@@ -1,6 +1,7 @@
 package pw.tmg.client.module.mac;
 
 import com.tulskiy.keymaster.common.Provider;
+import org.bridj.Pointer;
 import pw.tmg.client.model.*;
 import rx.Single;
 import rx.functions.Action0;
@@ -13,17 +14,16 @@ import java.io.IOException;
 
 @Singleton
 final class MacPlatform implements ClipboardHandler, KeybindHandler, NotificationHandler, ScreenShotter {
-    @Inject MacBridge bridge;
     private Provider keybindProvider = Provider.getCurrentProvider(false);
 
     @Override
     public ClipboardContent getAllClipboardContent() {
-        return new MacClipboardContent(bridge.getPasteboardContents());
+        return new MacClipboardContent(MacBridge.getPasteboardContents());
     }
 
     @Override
     public void setClipboard(String clipboard) {
-        bridge.writeToPasteboard(clipboard);
+        MacBridge.writeToPasteboard(Pointer.pointerToCString(clipboard));
     }
 
     @Override
@@ -37,7 +37,18 @@ final class MacPlatform implements ClipboardHandler, KeybindHandler, Notificatio
     @Override
     public Single<Void> postNotification(Notification notification) {
         return Single.create(s -> {
-            int i = bridge.sendNotification(notification.getTitle(), null, notification.getMessage(), notification.getSound(), () -> notification.getClickHandler().call());
+            MacBridge.notification_callback notification_callback = new MacBridge.notification_callback() {
+                @Override
+                public void apply() {
+                    notification.getClickHandler().call();
+                }
+            };
+            int i = MacBridge.sendNotification(
+                    Pointer.pointerToCString(notification.getTitle()),
+                    null,
+                    Pointer.pointerToCString(notification.getMessage()),
+                    Pointer.pointerToCString(notification.getSound()),
+                    Pointer.getPointer(notification_callback));
             if (i != 0)
                 s.onError(new Exception());
 

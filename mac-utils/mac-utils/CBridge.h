@@ -1,12 +1,13 @@
 #ifndef CBridge_h
 #define CBridge_h
 #import "NotificationDelegate.h"
+#import "PasteboardContentType.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 typedef struct {
-    const char *type;
+    char *type;
     unsigned char *data;
     unsigned long length;
 } PasteboardContent;

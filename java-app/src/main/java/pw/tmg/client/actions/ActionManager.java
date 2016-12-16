@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import pw.tmg.client.Constants;
 import pw.tmg.client.model.*;
 import pw.tmg.client.util.TypeMap;
+import rx.Single;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +43,11 @@ public final class ActionManager {
 
     public void performAction(TmgAction action) {
         System.out.println("called");
-        action.call().toObservable().filter(e -> e != null).lift(uploader.get()).subscribe(result -> {
+        Single<UploadTarget> call = action.call();
+        if (call == null) {
+            return;
+        }
+        call.toObservable().filter(e -> e != null).lift(uploader.get()).subscribe(result -> {
             clipboardHandler.setClipboard(result.getUrl());
             notificationHandler.postNotification(new Notification("Uploaded", "Uploaded to: " + result.getUrl(), null, () -> {
                 try {

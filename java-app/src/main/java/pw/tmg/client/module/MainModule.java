@@ -4,7 +4,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import com.sun.jna.Platform;
 import pw.tmg.client.TmgClient;
-import pw.tmg.client.TmgTrayIcon;
 import pw.tmg.client.actions.ActionManager;
 import pw.tmg.client.model.*;
 import pw.tmg.client.module.cross.audio.JavaAudio;
@@ -14,11 +13,10 @@ import pw.tmg.client.module.mac.MacPlatformModule;
 public final class MainModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(TmgClient.class);
-        bind(TmgTrayIcon.class);
         bind(ActionManager.class).asEagerSingleton();
         bind(AssetSource.class).to(TmgClient.class);
         bind(AudioEngine.class).to(JavaAudio.class);
+        bind(ApplicationController.class).to(TmgClient.class);
 
         requireBinding(ClipboardHandler.class);
         requireBinding(NotificationHandler.class);

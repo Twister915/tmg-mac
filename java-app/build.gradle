@@ -30,7 +30,8 @@ repositories {
 }
 
 dependencies {
-    compile 'net.java.dev.jna:jna:4.2.0'
+//    compile 'net.java.dev.jna:jna:4.2.0'
+    compile 'com.nativelibs4java:bridj:0.7.0'
     compile 'com.github.tulskiy:jkeymaster:1.2'
     compile 'io.reactivex:rxjava:+'
     compileOnly 'org.projectlombok:lombok:+'

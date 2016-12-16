@@ -67,27 +67,28 @@ const int writeToPasteboard(const char *data) {
     return result; //and return the result (implicit cast from BOOL to const int)
 }
 
+
 PasteboardContent **getPasteboardContents() {
     //in order: the types of data that we want to support returning to the caller
-    NSMutableArray<NSString *> *types = [[NSMutableArray alloc] initWithArray:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, NSPasteboardTypeTIFF, NSPasteboardTypePNG, NSPasteboardTypePDF, NSHTMLPboardType, NSStringPboardType, nil]];
+    NSMutableArray<PasteboardContentType *> *types = [[NSMutableArray alloc] initWithArray:[NSArray arrayWithObjects:
+                                                                                            [PasteboardContentType withName:@"filename" systemId:NSFilenamesPboardType],
+                                                                                            [PasteboardContentType withName:@"url" systemId:NSURLPboardType],
+                                                                                            [PasteboardContentType withName:@"tiff" systemId:NSPasteboardTypeTIFF],
+                                                                                            [PasteboardContentType withName:@"png" systemId:NSPasteboardTypePNG],
+                                                                                            [PasteboardContentType withName:@"pdf" systemId:NSPasteboardTypePDF],
+                                                                                            [PasteboardContentType withName:@"html" systemId:NSHTMLPboardType],
+                                                                                            [PasteboardContentType withName:@"string" systemId:NSStringPboardType],
+                                                                                            nil]];
     //the resulting pasteboard data container (we will fill this up below)
     NSMutableDictionary<NSString *, NSData *> *resultData = [[NSMutableDictionary alloc] init];
     
     //we need to grab the pasteboard
     NSPasteboard * _Nonnull pasteboard = getPasteboard();
-    while ([types count] > 0) { //and while we've not eliminated every type from the array
-        //we should grab the first "type" that is in the pasteboard
-        //(note this is in order, so everything preceeding it in the array is not a data type we're interested in
-        //which means that we can say that if the object at index 5 is the object that comes out of this function, everything before it is not in the clipboard)
-        NSString *aval = [pasteboard availableTypeFromArray:types];
-        
-        if (aval == NULL) //if nothing is found in the clipboard, that means no items remain which can be read, and this loop is to be broken
-            break;
-        
-        //(otherwise) we remove all objects we have analyzed (everything preceeding and including the current type)
-        [types removeObjectsInRange:NSMakeRange(0, [types indexOfObject:aval] + 1)];
-        //and we get the data for the current type and put it in our mutable dictionary
-        resultData[aval] = [pasteboard dataForType:aval];
+    for (int i = 0; i < [types count]; i++) {
+        PasteboardContentType *type = [types objectAtIndex:i];
+        NSString *aval = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:type->systemId]];
+        if (aval != NULL)
+            resultData[type->internalId] = [pasteboard dataForType:aval];
     }
     [types release]; //release the types array now that we're done with it
 
@@ -105,8 +106,8 @@ PasteboardContent **getPasteboardContents() {
         PasteboardContent *data = malloc(sizeof(PasteboardContent));
         data->data = (unsigned char *)[bytes bytes]; //the raw bytes in the clipboard
         data->length = [bytes length]; //the length of the bytes (since all java will have, to start off with, is a pointer)
-        data->type = [type UTF8String]; //and the type from apple's pasteboard
-        
+        data->type = calloc([type length] + 1, 1);
+        strncpy(data->type, [type UTF8String], [type length]);
         datas[i] = data; //then we assign this instance's pointer to the position i in the array above (PasteboardContent**)
         
         i++; //increment i, obviously

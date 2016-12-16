@@ -3,6 +3,7 @@ package pw.tmg.client;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import pw.tmg.client.model.ApplicationController;
 import pw.tmg.client.model.AssetSource;
 import pw.tmg.client.module.MainModule;
 
@@ -10,7 +11,7 @@ import java.awt.*;
 import java.io.InputStream;
 
 @Singleton
-public final class TmgClient implements AssetSource {
+public final class TmgClient implements AssetSource, ApplicationController {
     public static void main(String[] args) throws Exception {
         Guice.createInjector(new MainModule()).getInstance(TmgClient.class).go();
     }
@@ -29,5 +30,10 @@ public final class TmgClient implements AssetSource {
         if (resourceAsStream == null)
             throw new IllegalStateException("The resource is null!");
         return resourceAsStream;
+    }
+
+    public void close() {
+        //todo something useful here
+        System.exit(0);
     }
 }

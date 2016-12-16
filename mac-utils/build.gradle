@@ -20,7 +20,7 @@ xcodebuild {
 
 task copyGeneratedToRootProject(type: Copy) {
     from "${buildDir}/sym/Release/libmac-utils.dylib"
-    into "../java-app/src/main/resources/darwin/"
+    into "../java-app/src/main/resources/lib/darwin_universal/"
 }
 
 task buildLib() {
