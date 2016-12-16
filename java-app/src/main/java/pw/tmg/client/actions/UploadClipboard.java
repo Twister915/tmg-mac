@@ -15,6 +15,6 @@ public final class UploadClipboard implements TmgAction {
     @Override
     public Single<UploadTarget> call() {
         System.out.println(clipboard.getAllClipboardContent());
-        return null;
+        return clipboard.getAllClipboardContent().toUploadTarget();
     }
 }

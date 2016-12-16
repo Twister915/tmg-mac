@@ -31,6 +31,7 @@ repositories {
 
 dependencies {
 //    compile 'net.java.dev.jna:jna:4.2.0'
+    compile group: 'org.apache.tika', name: 'tika-core', version: '1.14'
     compile 'com.nativelibs4java:bridj:0.7.0'
     compile 'com.github.tulskiy:jkeymaster:1.2'
     compile 'io.reactivex:rxjava:+'
