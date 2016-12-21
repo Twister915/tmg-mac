@@ -25,3 +25,5 @@ fabric.properties
 .DS_Store
 build
 .gradle
+
+hs_err_pid*.log
